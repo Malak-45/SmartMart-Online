@@ -1,0 +1,598 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+    // ================================
+    // SMARTMART PRODUCT DATA
+    // ================================
+
+    const int productCount = 20;
+
+    int productID[productCount] = {
+        101, 102, 103, 104, 105,
+        201, 202, 203, 204, 205,
+        301, 302, 303, 304, 305,
+        401, 402, 403, 404, 405
+    };
+
+    string productName[productCount] = {
+        "Tomatoes",
+        "Potatoes",
+        "Apples",
+        "Bananas",
+        "Cucumbers",
+
+        "Milk",
+        "Yogurt",
+        "Cheese",
+        "Eggs",
+        "Butter",
+
+        "Chicken",
+        "Beef",
+        "Fish",
+        "Frozen Chicken",
+        "Sausage",
+
+        "Cola",
+        "Orange Juice",
+        "Water",
+        "Chocolate",
+        "Chips"
+    };
+
+    string category[productCount] = {
+        "Fruits & Vegetables",
+        "Fruits & Vegetables",
+        "Fruits & Vegetables",
+        "Fruits & Vegetables",
+        "Fruits & Vegetables",
+
+        "Dairy & Eggs",
+        "Dairy & Eggs",
+        "Dairy & Eggs",
+        "Dairy & Eggs",
+        "Dairy & Eggs",
+
+        "Meat & Chicken",
+        "Meat & Chicken",
+        "Meat & Chicken",
+        "Meat & Chicken",
+        "Meat & Chicken",
+
+        "Beverages & Snacks",
+        "Beverages & Snacks",
+        "Beverages & Snacks",
+        "Beverages & Snacks",
+        "Beverages & Snacks"
+    };
+
+    double price[productCount] = {
+        35, 30, 80, 65, 40,
+        45, 15, 95, 180, 90,
+        220, 350, 250, 190, 160,
+        30, 55, 15, 40, 25
+    };
+
+    int stock[productCount] = {
+        50, 40, 30, 35, 45,
+        30, 60, 25, 20, 15,
+        20, 15, 25, 30, 20,
+        50, 40, 100, 35, 45
+    };
+
+    // ================================
+    // CART
+    // ================================
+
+    int cartQuantity[productCount] = {0};
+
+    // ================================
+    // ORDERS
+    // ================================
+
+    int orderID[100];
+    double orderTotal[100];
+    string orderStatus[100];
+
+    int orderCount = 0;
+    int nextOrderID = 5001;
+
+    string customerName;
+    string deliveryArea;
+
+    int choice;
+
+    // ================================
+    // WELCOME
+    // ================================
+
+    cout << "=============================================\n";
+    cout << "          🛒 SMARTMART ONLINE STORE\n";
+    cout << "=============================================\n";
+
+    cout << "Welcome to SmartMart!\n";
+    cout << "Your online supermarket is ready.\n";
+
+    cout << "\nEnter your name: ";
+    getline(cin, customerName);
+
+    do
+    {
+        cout << "\n=============================================\n";
+        cout << "                 MAIN MENU\n";
+        cout << "=============================================\n";
+
+        cout << "1. View Categories\n";
+        cout << "2. View All Products\n";
+        cout << "3. Search Product\n";
+        cout << "4. Add Product To Cart\n";
+        cout << "5. Remove Product From Cart\n";
+        cout << "6. View My Cart\n";
+        cout << "7. Checkout\n";
+        cout << "8. My Orders\n";
+        cout << "9. Low Stock Report\n";
+        cout << "10. Exit\n";
+
+        cout << "=============================================\n";
+        cout << "Choose: ";
+        cin >> choice;
+
+        // =====================================
+        // 1. VIEW CATEGORIES
+        // =====================================
+
+        if (choice == 1)
+        {
+            cout << "\n============== CATEGORIES ==============\n";
+
+            cout << "1. Fruits & Vegetables\n";
+            cout << "2. Dairy & Eggs\n";
+            cout << "3. Meat & Chicken\n";
+            cout << "4. Beverages & Snacks\n";
+            cout << "=========================================\n";
+        }
+
+        // =====================================
+        // 2. VIEW ALL PRODUCTS
+        // =====================================
+
+        else if (choice == 2)
+        {
+            cout << "\n================ PRODUCTS ================\n";
+
+            for (int i = 0; i < productCount; i++)
+            {
+                cout << "\nID       : " << productID[i] << endl;
+                cout << "Product  : " << productName[i] << endl;
+                cout << "Category : " << category[i] << endl;
+                cout << "Price    : " << price[i] << " EGP\n";
+                cout << "Stock    : " << stock[i] << endl;
+
+                if (stock[i] == 0)
+                {
+                    cout << "Status   : OUT OF STOCK\n";
+                }
+                else if (stock[i] <= 5)
+                {
+                    cout << "Status   : LOW STOCK\n";
+                }
+                else
+                {
+                    cout << "Status   : AVAILABLE\n";
+                }
+
+                cout << "------------------------------------------\n";
+            }
+        }
+
+        // =====================================
+        // 3. SEARCH PRODUCT
+        // =====================================
+
+        else if (choice == 3)
+        {
+            int searchID;
+            bool found = false;
+
+            cout << "\nEnter Product ID: ";
+            cin >> searchID;
+
+            for (int i = 0; i < productCount; i++)
+            {
+                if (productID[i] == searchID)
+                {
+                    cout << "\n=========== PRODUCT FOUND ===========\n";
+
+                    cout << "ID       : " << productID[i] << endl;
+                    cout << "Product  : " << productName[i] << endl;
+                    cout << "Category : " << category[i] << endl;
+                    cout << "Price    : " << price[i] << " EGP\n";
+                    cout << "Stock    : " << stock[i] << endl;
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                cout << "\nProduct not found!\n";
+            }
+        }
+
+        // =====================================
+        // 4. ADD PRODUCT TO CART
+        // =====================================
+
+        else if (choice == 4)
+        {
+            int id;
+            int quantity;
+            bool found = false;
+
+            cout << "\nEnter Product ID: ";
+            cin >> id;
+
+            for (int i = 0; i < productCount; i++)
+            {
+                if (productID[i] == id)
+                {
+                    found = true;
+
+                    cout << "Product: "
+                         << productName[i] << endl;
+
+                    cout << "Price: "
+                         << price[i] << " EGP\n";
+
+                    cout << "Available Stock: "
+                         << stock[i] << endl;
+
+                    cout << "Enter Quantity: ";
+                    cin >> quantity;
+
+                    if (quantity <= 0)
+                    {
+                        cout << "\nInvalid quantity!\n";
+                    }
+                    else if (quantity > stock[i])
+                    {
+                        cout << "\nNot enough stock!\n";
+                    }
+                    else
+                    {
+                        cartQuantity[i] += quantity;
+
+                        cout << "\n✓ Product added to cart!\n";
+                    }
+
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                cout << "\nProduct not found!\n";
+            }
+        }
+
+        // =====================================
+        // 5. REMOVE FROM CART
+        // =====================================
+
+        else if (choice == 5)
+        {
+            int id;
+            int quantity;
+            bool found = false;
+
+            cout << "\nEnter Product ID: ";
+            cin >> id;
+
+            for (int i = 0; i < productCount; i++)
+            {
+                if (productID[i] == id)
+                {
+                    found = true;
+
+                    if (cartQuantity[i] == 0)
+                    {
+                        cout << "\nThis product is not in your cart.\n";
+                    }
+                    else
+                    {
+                        cout << "Current Quantity: "
+                             << cartQuantity[i] << endl;
+
+                        cout << "Quantity to remove: ";
+                        cin >> quantity;
+
+                        if (quantity <= 0 ||
+                            quantity > cartQuantity[i])
+                        {
+                            cout << "\nInvalid quantity!\n";
+                        }
+                        else
+                        {
+                            cartQuantity[i] -= quantity;
+
+                            cout << "\n✓ Product removed from cart.\n";
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                cout << "\nProduct not found!\n";
+            }
+        }
+
+        // =====================================
+        // 6. VIEW CART
+        // =====================================
+
+        else if (choice == 6)
+        {
+            double subtotal = 0;
+            bool empty = true;
+
+            cout << "\n================ MY CART ================\n";
+
+            for (int i = 0; i < productCount; i++)
+            {
+                if (cartQuantity[i] > 0)
+                {
+                    empty = false;
+
+                    double itemTotal =
+                        price[i] * cartQuantity[i];
+
+                    cout << productName[i]
+                         << " x "
+                         << cartQuantity[i]
+                         << " = "
+                         << itemTotal
+                         << " EGP\n";
+
+                    subtotal += itemTotal;
+                }
+            }
+
+            if (empty)
+            {
+                cout << "Your cart is empty.\n";
+            }
+            else
+            {
+                cout << "------------------------------------------\n";
+                cout << "Subtotal: "
+                     << subtotal << " EGP\n";
+            }
+        }
+
+        // =====================================
+        // 7. CHECKOUT
+        // =====================================
+
+        else if (choice == 7)
+        {
+            double subtotal = 0;
+            double discount = 0;
+            double deliveryFee = 30;
+            double total;
+
+            bool empty = true;
+
+            for (int i = 0; i < productCount; i++)
+            {
+                if (cartQuantity[i] > 0)
+                {
+                    empty = false;
+
+                    subtotal +=
+                        price[i] * cartQuantity[i];
+                }
+            }
+
+            if (empty)
+            {
+                cout << "\nYour cart is empty!\n";
+            }
+            else
+            {
+                if (subtotal >= 500)
+                {
+                    discount = subtotal * 0.10;
+                }
+
+                if (subtotal >= 1000)
+                {
+                    deliveryFee = 0;
+                }
+
+                total =
+                    subtotal - discount + deliveryFee;
+
+                cin.ignore();
+
+                cout << "\nEnter Delivery Area: ";
+                getline(cin, deliveryArea);
+
+                cout << "\n=============================================\n";
+                cout << "                ORDER SUMMARY\n";
+                cout << "=============================================\n";
+
+                cout << "Customer: "
+                     << customerName << endl;
+
+                cout << "Delivery Area: "
+                     << deliveryArea << endl;
+
+                cout << "\n--------------- ITEMS ----------------\n";
+
+                for (int i = 0; i < productCount; i++)
+                {
+                    if (cartQuantity[i] > 0)
+                    {
+                        cout << productName[i]
+                             << " x "
+                             << cartQuantity[i]
+                             << " = "
+                             << price[i] * cartQuantity[i]
+                             << " EGP\n";
+                    }
+                }
+
+                cout << "------------------------------------------\n";
+
+                cout << "Subtotal       : "
+                     << subtotal << " EGP\n";
+
+                cout << "Discount       : "
+                     << discount << " EGP\n";
+
+                cout << "Delivery Fee   : "
+                     << deliveryFee << " EGP\n";
+
+                cout << "TOTAL          : "
+                     << total << " EGP\n";
+
+                cout << "=============================================\n";
+
+                cout << "\nConfirm Order? (1 = Yes / 0 = No): ";
+
+                int confirm;
+                cin >> confirm;
+
+                if (confirm == 1)
+                {
+                    // Update stock
+                    for (int i = 0; i < productCount; i++)
+                    {
+                        if (cartQuantity[i] > 0)
+                        {
+                            stock[i] -= cartQuantity[i];
+                        }
+                    }
+
+                    // Save order
+                    orderID[orderCount] = nextOrderID;
+                    orderTotal[orderCount] = total;
+                    orderStatus[orderCount] = "Preparing";
+
+                    cout << "\n=============================================\n";
+                    cout << "             ORDER CONFIRMED ✓\n";
+                    cout << "=============================================\n";
+
+                    cout << "Order ID: "
+                         << orderID[orderCount] << endl;
+
+                    cout << "Status: "
+                         << orderStatus[orderCount] << endl;
+
+                    cout << "Total: "
+                         << total << " EGP\n";
+
+                    cout << "Estimated Delivery: 30 - 45 Minutes\n";
+
+                    cout << "=============================================\n";
+
+                    orderCount++;
+                    nextOrderID++;
+
+                    // Clear cart
+                    for (int i = 0; i < productCount; i++)
+                    {
+                        cartQuantity[i] = 0;
+                    }
+                }
+                else
+                {
+                    cout << "\nOrder cancelled.\n";
+                }
+            }
+        }
+
+        // =====================================
+        // 8. MY ORDERS
+        // =====================================
+
+        else if (choice == 8)
+        {
+            cout << "\n================ MY ORDERS ================\n";
+
+            if (orderCount == 0)
+            {
+                cout << "No orders yet.\n";
+            }
+            else
+            {
+                for (int i = 0; i < orderCount; i++)
+                {
+                    cout << "\nOrder ID : "
+                         << orderID[i] << endl;
+
+                    cout << "Total    : "
+                         << orderTotal[i] << " EGP\n";
+
+                    cout << "Status   : "
+                         << orderStatus[i] << endl;
+
+                    cout << "------------------------------------------\n";
+                }
+            }
+        }
+
+        // =====================================
+        // 9. LOW STOCK REPORT
+        // =====================================
+
+        else if (choice == 9)
+        {
+            bool found = false;
+
+            cout << "\n============= LOW STOCK REPORT =============\n";
+
+            for (int i = 0; i < productCount; i++)
+            {
+                if (stock[i] <= 5)
+                {
+                    cout << productName[i]
+                         << " - "
+                         << stock[i]
+                         << " left\n";
+
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                cout << "All products have sufficient stock.\n";
+            }
+        }
+
+        // =====================================
+        // 10. EXIT
+        // =====================================
+
+        else if (choice == 10)
+        {
+            cout << "\nThank you for shopping with SmartMart! 🛒\n";
+        }
+
+        else
+        {
+            cout << "\nInvalid choice. Please try again.\n";
+        }
+
+    } while (choice != 10);
+
+    return 0;
+}
